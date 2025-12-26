@@ -1,0 +1,29 @@
+name: Pet Manager API
+
+on:
+  push:
+    paths:
+      - 'data/**'
+  repository_dispatch:
+    types: [update-pets]
+
+jobs:
+  update-pets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update pets.json
+        run: |
+          # This would update your pets-data.json
+          echo "${{ github.event.client_payload.data }}" > 1data/pets-data.json
+          
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add 1data/pets-data.json
+          git commit -m "Update pets data via API"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
